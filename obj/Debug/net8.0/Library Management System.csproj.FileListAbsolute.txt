@@ -1,0 +1,29 @@
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Library Management System
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Library Management System.deps.json
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Library Management System.runtimeconfig.json
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Library Management System.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Library Management System.pdb
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Configuration.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Binder.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Logging.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Logging.Configuration.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Logging.Console.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Logging.Debug.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Options.ConfigurationExtensions.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.csproj.AssemblyReference.cache
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.AssemblyInfoInputs.cache
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.AssemblyInfo.cs
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.csproj.CoreCompileInputs.cache
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library .F7D87690.Up2Date
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/refint/Library Management System.dll
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.pdb
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/Library Management System.genruntimeconfig.cache
+/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/Debug/net8.0/ref/Library Management System.dll
