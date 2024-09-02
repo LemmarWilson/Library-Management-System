@@ -42,7 +42,7 @@ Follow these steps to run the Library Management System on your local machine:
 First, clone the repository to your local machine using the following command:
 
 ```bash
-git clone https://github.com/yourusername/Library-Management-System.git
+git clone https://github.com/LemmarWilson/Library-Management-System.git
 ```
 
 Navigate to the project directory:
