@@ -102,6 +102,7 @@
 using Library_Management_System.Services;
 using Library_Management_System.Models;
 using System;
+using Library_Management_System.Repositories;
 
 namespace Library_Management_System
 {
@@ -134,7 +135,9 @@ namespace Library_Management_System
                 Console.WriteLine("10. Display All Books");
                 Console.WriteLine("11. Display Available Books");
                 Console.WriteLine("12. Delete User");
-                Console.WriteLine("13. Exit");
+                Console.WriteLine("13. Register Library Card");
+                Console.WriteLine("14. DisplayBorrowedBooks");
+                Console.WriteLine("15. Exit");
 
                 Console.Write("Enter your choice: ");
                 var choice = Console.ReadLine();
@@ -178,6 +181,12 @@ namespace Library_Management_System
                         DeleteUser(userService, currentUser);
                         break;
                     case "13":
+                        RegisterLibraryCard(currentUser);
+                        break;
+                    case "14":
+                        DisplayBorrowedBooks(currentUser);
+                        break;
+                    case "15":
                         Console.WriteLine("Exiting the program...");
                         return;
                     default:
@@ -185,6 +194,34 @@ namespace Library_Management_System
                         break;
                 }
             }
+        }
+
+        static void DisplayBorrowedBooks(string? username)
+        {
+            if (username == null)
+            {
+                Console.WriteLine("Must be logged in.");
+                return;
+            }
+            if (!LibraryCardRepository.Instance.ContainsUser(username))
+            {
+                Console.WriteLine("You do not have a library card. Please register one.");
+                return;
+            }
+
+            LibraryCard card = LibraryCardRepository.Instance.GetCard(username);
+            card.DisplayBooks();
+        }
+
+        static void RegisterLibraryCard(string? username)
+        {
+            if (username == null)
+            {
+                Console.WriteLine("Must be logged in first before you can register for a library card.");
+                return;
+            }
+
+            LibraryCardService.CreateCard(username);
         }
 
         static void RegisterUser(UserService userService)
@@ -282,7 +319,7 @@ namespace Library_Management_System
 
             bookService.AddBook(isbn, title, author, publishedYear, genre, currentUser);
         }
-
+        //
         static void BorrowBook(BookService bookService, string currentUser)
         {
             if (currentUser == null)
@@ -291,11 +328,25 @@ namespace Library_Management_System
                 return;
             }
 
+            if (!LibraryCardRepository.Instance.ContainsUser(currentUser))
+            {
+                Console.WriteLine("Must have a library card before you can borrow books");
+                return;
+            }
+
             Console.Write("Enter ISBN of the book to borrow: ");
             var isbn = Console.ReadLine();
             bookService.BorrowBook(isbn, currentUser);
-        }
 
+            Book borrow = BookRepository.Instance.GetBookByISBN(isbn);
+
+            if (borrow != null)
+            {
+                LibraryCard card = LibraryCardRepository.Instance.GetCard(currentUser);
+                card.BorrowBook(isbn);
+            }
+        }
+        //
         static void ReturnBook(BookService bookService, string currentUser)
         {
             if (currentUser == null)
@@ -303,10 +354,18 @@ namespace Library_Management_System
                 Console.WriteLine("You must be logged in to return a book.");
                 return;
             }
+            if (!LibraryCardRepository.Instance.ContainsUser(currentUser))
+            {
+                Console.WriteLine("Must have a library card before you can return books");
+                return;
+            }
 
             Console.Write("Enter ISBN of the book to return: ");
             var isbn = Console.ReadLine();
             bookService.ReturnBook(isbn, currentUser);
+
+            LibraryCard card = LibraryCardRepository.Instance.GetCard(currentUser);
+            card.ReturnBook(isbn);
         }
 
         static void ReserveBook(BookService bookService, string currentUser)

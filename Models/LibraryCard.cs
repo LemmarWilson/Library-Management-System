@@ -1,11 +1,14 @@
 ﻿using Library_Management_System.Repositories;
+using Library_Management_System.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Library_Management_System.Models
 {
@@ -22,6 +25,7 @@ namespace Library_Management_System.Models
         private DateTime _renewalDate;
         private List<string> _borrowedBooks = new List<string>();
 
+        public LibraryCard() { }
         public LibraryCard(string firstName, string lastName, Address address)
         {
             _userId = id;
@@ -60,31 +64,33 @@ namespace Library_Management_System.Models
             get => _renewalDate;
         }
 
-        public void BorrowBook(string bookTitle)
+        public void BorrowBook(string isbn)
         {
             if (_borrowedBooks.Count < MAXBOOKS)
             {
-                // check if the book is available before adding
-                _borrowedBooks.Add(bookTitle);
-                // change book object to false
-                Console.WriteLine("You have checked out {0}", bookTitle);
+                if (_borrowedBooks.Contains(isbn))
+                {
+                    Console.WriteLine("This book is already in your possession");
+                    return;
+                }
+                _borrowedBooks.Add(isbn);
+                Console.WriteLine("You have checked out {0}", isbn);
             }
             else
             {
                 Console.WriteLine("You can only borrow {0} books at a time", MAXBOOKS);
             }
         }
-        public void ReturnBook(string bookTitle)
+        public void ReturnBook(string isbn)
         {
-            if (_borrowedBooks.Contains(bookTitle))
+            if (_borrowedBooks.Contains(isbn))
             {
-                // set book object to true
-                _borrowedBooks.Remove(bookTitle);
-                Console.WriteLine("{0} has been returned", bookTitle);
+                _borrowedBooks.Remove(isbn);
+                Console.WriteLine("{0} has been returned", isbn);
             }
             else
             {
-                Console.WriteLine("{0} is not part of your collection", bookTitle);
+                Console.WriteLine("{0} is not part of your collection", isbn);
             }
         }
         public bool IsActive()
@@ -96,27 +102,16 @@ namespace Library_Management_System.Models
             _issueDate = DateTime.Now;
             _renewalDate = _issueDate.AddYears(1);
         }
+        public void DisplayBooks()
+        {
+            Console.WriteLine("\nYou currently have: ");
+            foreach (var book in _borrowedBooks)
+            {
+                Book borrowed = BookRepository.Instance.GetBookByISBN(book);
+                Console.WriteLine("\tTitle: " + borrowed.Title);
+                Console.WriteLine("\tAuthor: " + borrowed.Author);
+                Console.WriteLine();
+            }
+        }
     }
-
-    //public class Test
-    //{
-    //    private static readonly LibraryCardRepository libraryCardRepository = LibraryCardRepository.Instance;
-
-    //    static void Main()
-    //    {
-    //        Address a1 = new Address("464 st name", "City", "State", "90908");
-    //        Address a2 = new Address("686 st name", "City", "State", "90210");
-
-    //        LibraryCard libraryCard = new LibraryCard("Mike", "Harold", a1);
-    //        LibraryCard newCard = new LibraryCard("Mike", "Harold", a2);
-
-    //        libraryCard.Address.DisplayAddress();
-    //        newCard.Address.DisplayAddress();
-
-    //        libraryCardRepository.AddLibraryCard("mikr123", libraryCard);
-    //        libraryCardRepository.AddLibraryCard("mpoyy", newCard);
-
-    //        libraryCardRepository.DisplayUsers();
-    //    }
-    //}
 }

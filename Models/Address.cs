@@ -24,7 +24,7 @@ namespace Library_Management_System.Models
 
         public void DisplayAddress()
         {
-            Console.WriteLine($"{_streetName} {_city}, {_state} {_zipcode}");
+            Console.WriteLine($"{_streetName} {_city},\n {_state} {_zipcode}");
         }
     }
 }
