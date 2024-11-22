@@ -340,7 +340,7 @@ namespace Library_Management_System
 
             Book borrow = BookRepository.Instance.GetBookByISBN(isbn);
 
-            if (borrow != null)
+            if (borrow != null && borrow.IsAvailable)
             {
                 LibraryCard card = LibraryCardRepository.Instance.GetCard(currentUser);
                 card.BorrowBook(isbn);
@@ -363,9 +363,6 @@ namespace Library_Management_System
             Console.Write("Enter ISBN of the book to return: ");
             var isbn = Console.ReadLine();
             bookService.ReturnBook(isbn, currentUser);
-
-            LibraryCard card = LibraryCardRepository.Instance.GetCard(currentUser);
-            card.ReturnBook(isbn);
         }
 
         static void ReserveBook(BookService bookService, string currentUser)

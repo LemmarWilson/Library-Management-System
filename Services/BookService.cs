@@ -251,8 +251,18 @@ namespace Library_Management_System.Services
             // Attempt to borrow the book within a try-catch block
             try
             {
-                book.Borrow(username);
-                Console.WriteLine($"Book '{book.Title}' borrowed successfully by {username}.");
+                LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
+                if (userCard.Count < 5 && book.IsAvailable)
+                {
+                    book.Borrow(username);
+                    userCard.BorrowBook(isbn);
+                    Console.WriteLine($"Book '{book.Title}' borrowed successfully by {username}.");
+                }
+                else
+                {
+                    Console.WriteLine("This book is already borrowed");
+                }
+                
             }
             catch (InvalidOperationException ex)
             {
@@ -294,9 +304,15 @@ namespace Library_Management_System.Services
                 return; // Exit if the book is not borrowed
             }
 
+            LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
+
             // Mark the book as returned
-            book.Return();
-            Console.WriteLine($"Book '{book.Title}' returned successfully.");
+            if (userCard.ReturnBook(isbn))
+            {
+                book.Return();
+                Console.WriteLine($"Book '{book.Title}' returned successfully.");
+            }
+            
         }
 
 

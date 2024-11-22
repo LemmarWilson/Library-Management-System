@@ -63,35 +63,25 @@ namespace Library_Management_System.Models
         {
             get => _renewalDate;
         }
+        public int Count
+        {
+            get => _borrowedBooks.Count;
+        }
 
         public void BorrowBook(string isbn)
         {
-            if (_borrowedBooks.Count < MAXBOOKS)
-            {
-                if (_borrowedBooks.Contains(isbn))
-                {
-                    Console.WriteLine("This book is already in your possession");
-                    return;
-                }
-                _borrowedBooks.Add(isbn);
-                Console.WriteLine("You have checked out {0}", isbn);
-            }
-            else
-            {
-                Console.WriteLine("You can only borrow {0} books at a time", MAXBOOKS);
-            }
+            _borrowedBooks.Add(isbn);
         }
-        public void ReturnBook(string isbn)
+        public bool ReturnBook(string isbn)
         {
             if (_borrowedBooks.Contains(isbn))
             {
                 _borrowedBooks.Remove(isbn);
                 Console.WriteLine("{0} has been returned", isbn);
+                return true;
             }
-            else
-            {
-                Console.WriteLine("{0} is not part of your collection", isbn);
-            }
+            Console.WriteLine("You have not borrowed this book");
+            return false;
         }
         public bool IsActive()
         {
