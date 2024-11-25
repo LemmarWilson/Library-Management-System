@@ -102,6 +102,7 @@
 using Library_Management_System.Services;
 using Library_Management_System.Models;
 using System;
+using System.Transactions;
 
 namespace Library_Management_System
 {
@@ -135,6 +136,7 @@ namespace Library_Management_System
                 Console.WriteLine("11. Display Available Books");
                 Console.WriteLine("12. Delete User");
                 Console.WriteLine("13. Exit");
+                Console.WriteLine("testing"); //Amber's
 
                 Console.Write("Enter your choice: ");
                 var choice = Console.ReadLine();
@@ -180,6 +182,12 @@ namespace Library_Management_System
                     case "13":
                         Console.WriteLine("Exiting the program...");
                         return;
+                    case "testing":
+                        Test();   //Amber's
+                        break;
+                    case "testing2": //Amber's
+                        Test2();
+                        break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
@@ -191,10 +199,24 @@ namespace Library_Management_System
         {
             Console.Write("Enter username: ");
             var username = Console.ReadLine();
-            Console.Write("Enter password: ");
-            var password = Console.ReadLine();
             Console.Write("Enter email: ");
             var email = Console.ReadLine();
+            var user = new User(username, email, Role.USER);
+            string password;
+            while(true)
+            {
+                Console.WriteLine("Enter your password");
+                password = Console.ReadLine();
+                try
+                {
+                    user.Password.SetPassword(password);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
             if (userService.Register(username, password, email))
             {
@@ -373,6 +395,37 @@ namespace Library_Management_System
                 Console.WriteLine($"User '{currentUser}' deleted successfully.");
                 currentUser = null;
             }
+        }
+
+        static void Test() //Amber's
+        {
+            
+            User usertest = new User("Testuser", "email@local", Role.USER);
+
+            usertest.SecurityQuestions.InputSecurityQuestions();
+        }
+
+        static void Test2() //Amber's
+        {
+            User usertest2;
+            while (true)
+            {
+                try 
+                {
+                    string password = Password.InputPassword();
+                    usertest2 = new User("Testuser2", "email@local", Role.USER);
+
+                    usertest2.Password.SetPassword(password);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error given: " + ex.Message);
+                    Console.WriteLine("Try again!");
+                }
+            }
+            Console.WriteLine(usertest2.Password.GetPassword());
+
         }
     }
 }
