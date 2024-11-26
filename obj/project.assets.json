@@ -892,24 +892,26 @@
     ]
   },
   "packageFolders": {
-    "/Users/lemmarwilson/.nuget/packages/": {}
+    "C:\\Users\\migue\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/Library Management System.csproj",
+      "projectUniqueName": "C:\\Library-System-Rep\\Library-Management-System\\Library Management System.csproj",
       "projectName": "Library Management System",
-      "projectPath": "/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/Library Management System.csproj",
-      "packagesPath": "/Users/lemmarwilson/.nuget/packages/",
-      "outputPath": "/Users/lemmarwilson/Desktop/Desktop Files/School/CSC200/CSC200 Final Project/Library Management System/obj/",
+      "projectPath": "C:\\Library-System-Rep\\Library-Management-System\\Library Management System.csproj",
+      "packagesPath": "C:\\Users\\migue\\.nuget\\packages\\",
+      "outputPath": "C:\\Library-System-Rep\\Library-Management-System\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/lemmarwilson/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\migue\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -922,11 +924,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -962,7 +959,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

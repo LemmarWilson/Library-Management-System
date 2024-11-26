@@ -102,7 +102,11 @@
 using Library_Management_System.Services;
 using Library_Management_System.Models;
 using System;
+ security-questions
 using System.Transactions;
+
+using Library_Management_System.Repositories;
+main
 
 namespace Library_Management_System
 {
@@ -122,6 +126,7 @@ namespace Library_Management_System
 
             while (true)
             {
+ security-questions
                 Console.WriteLine("\nPlease select an option:");
                 Console.WriteLine("1. Register User");
                 Console.WriteLine("2. Register Admin");
@@ -192,11 +197,101 @@ namespace Library_Management_System
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
                 }
+                Console.WriteLine("\nPlease select an option:");
+                Console.WriteLine("1. Register User");
+                Console.WriteLine("2. Register Admin");
+                Console.WriteLine("3. Log In");
+                Console.WriteLine("4. Log Out");
+                Console.WriteLine("5. Add Book");
+                Console.WriteLine("6. Borrow Book");
+                Console.WriteLine("7. Return Book");
+                Console.WriteLine("8. Reserve Book");
+                Console.WriteLine("9. Cancel Reservation");
+                Console.WriteLine("10. Display All Books");
+                Console.WriteLine("11. Display Available Books");
+                Console.WriteLine("12. Delete User");
+                Console.WriteLine("13. Register Library Card");
+                Console.WriteLine("14. DisplayBorrowedBooks");
+                Console.WriteLine("15. Exit");
+
+                Console.Write("Enter your choice: ");
+                var choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        RegisterUser(userService);
+                        break;
+                    case "2":
+                        RegisterAdmin(userService);
+                        break;
+                    case "3":
+                        currentUser = LogInUser(userService);
+                        break;
+                    case "4":
+                        LogOutUser(userService, ref currentUser);
+                        break;
+                    case "5":
+                        AddBook(bookService, currentUser);
+                        break;
+                    case "6":
+                        BorrowBook(bookService, currentUser);
+                        break;
+                    case "7":
+                        ReturnBook(bookService, currentUser);
+                        break;
+                    case "8":
+                        ReserveBook(bookService, currentUser);
+                        break;
+                    case "9":
+                        CancelReservation(bookService, currentUser);
+                        break;
+                    case "10":
+                        DisplayAllBooks(bookService, currentUser);
+                        break;
+                    case "11":
+                        DisplayAvailableBooks(bookService, currentUser);
+                        break;
+                    case "12":
+                        DeleteUser(userService, currentUser);
+                        break;
+                    case "13":
+                        RegisterLibraryCard(currentUser);
+                        break;
+                    case "14":
+                        DisplayBorrowedBooks(currentUser);
+                        break;
+                    case "15":
+                        Console.WriteLine("Exiting the program...");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
             }
         }
 
-        static void RegisterUser(UserService userService)
+        static void DisplayBorrowedBooks(string? username)
         {
+            if (username == null)
+            {
+                Console.WriteLine("Must be logged in.");
+                return;
+            }
+            if (!LibraryCardRepository.Instance.ContainsUser(username))
+            {
+                Console.WriteLine("You do not have a library card. Please register one.");
+                return;
+main
+            }
+
+            LibraryCard card = LibraryCardRepository.Instance.GetCard(username);
+            card.DisplayBooks();
+        }
+
+        static void RegisterLibraryCard(string? username)
+        {
+ security-questions
             Console.Write("Enter username: ");
             var username = Console.ReadLine();
             Console.Write("Enter email: ");
@@ -217,6 +312,25 @@ namespace Library_Management_System
                     Console.WriteLine(ex.Message);
                 }
             }
+
+            if (username == null)
+            {
+                Console.WriteLine("Must be logged in first before you can register for a library card.");
+                return;
+            }
+
+            LibraryCardService.CreateCard(username);
+        }
+
+        static void RegisterUser(UserService userService)
+        {
+            Console.Write("Enter username: ");
+            var username = Console.ReadLine();
+            Console.Write("Enter password: ");
+            var password = Console.ReadLine();
+            Console.Write("Enter email: ");
+            var email = Console.ReadLine();
+ main
 
             if (userService.Register(username, password, email))
             {
@@ -304,7 +418,7 @@ namespace Library_Management_System
 
             bookService.AddBook(isbn, title, author, publishedYear, genre, currentUser);
         }
-
+        //
         static void BorrowBook(BookService bookService, string currentUser)
         {
             if (currentUser == null)
@@ -313,16 +427,35 @@ namespace Library_Management_System
                 return;
             }
 
+            if (!LibraryCardRepository.Instance.ContainsUser(currentUser))
+            {
+                Console.WriteLine("Must have a library card before you can borrow books");
+                return;
+            }
+
             Console.Write("Enter ISBN of the book to borrow: ");
             var isbn = Console.ReadLine();
             bookService.BorrowBook(isbn, currentUser);
-        }
 
+            Book borrow = BookRepository.Instance.GetBookByISBN(isbn);
+
+            if (borrow != null && borrow.IsAvailable)
+            {
+                LibraryCard card = LibraryCardRepository.Instance.GetCard(currentUser);
+                card.BorrowBook(isbn);
+            }
+        }
+        //
         static void ReturnBook(BookService bookService, string currentUser)
         {
             if (currentUser == null)
             {
                 Console.WriteLine("You must be logged in to return a book.");
+                return;
+            }
+            if (!LibraryCardRepository.Instance.ContainsUser(currentUser))
+            {
+                Console.WriteLine("Must have a library card before you can return books");
                 return;
             }
 
