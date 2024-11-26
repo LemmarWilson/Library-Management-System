@@ -102,7 +102,11 @@
 using Library_Management_System.Services;
 using Library_Management_System.Models;
 using System;
+ security-questions
+using System.Transactions;
+
 using Library_Management_System.Repositories;
+main
 
 namespace Library_Management_System
 {
@@ -122,6 +126,77 @@ namespace Library_Management_System
 
             while (true)
             {
+ security-questions
+                Console.WriteLine("\nPlease select an option:");
+                Console.WriteLine("1. Register User");
+                Console.WriteLine("2. Register Admin");
+                Console.WriteLine("3. Log In");
+                Console.WriteLine("4. Log Out");
+                Console.WriteLine("5. Add Book");
+                Console.WriteLine("6. Borrow Book");
+                Console.WriteLine("7. Return Book");
+                Console.WriteLine("8. Reserve Book");
+                Console.WriteLine("9. Cancel Reservation");
+                Console.WriteLine("10. Display All Books");
+                Console.WriteLine("11. Display Available Books");
+                Console.WriteLine("12. Delete User");
+                Console.WriteLine("13. Exit");
+                Console.WriteLine("testing"); //Amber's
+
+                Console.Write("Enter your choice: ");
+                var choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        RegisterUser(userService);
+                        break;
+                    case "2":
+                        RegisterAdmin(userService);
+                        break;
+                    case "3":
+                        currentUser = LogInUser(userService);
+                        break;
+                    case "4":
+                        LogOutUser(userService, ref currentUser);
+                        break;
+                    case "5":
+                        AddBook(bookService, currentUser);
+                        break;
+                    case "6":
+                        BorrowBook(bookService, currentUser);
+                        break;
+                    case "7":
+                        ReturnBook(bookService, currentUser);
+                        break;
+                    case "8":
+                        ReserveBook(bookService, currentUser);
+                        break;
+                    case "9":
+                        CancelReservation(bookService, currentUser);
+                        break;
+                    case "10":
+                        DisplayAllBooks(bookService, currentUser);
+                        break;
+                    case "11":
+                        DisplayAvailableBooks(bookService, currentUser);
+                        break;
+                    case "12":
+                        DeleteUser(userService, currentUser);
+                        break;
+                    case "13":
+                        Console.WriteLine("Exiting the program...");
+                        return;
+                    case "testing":
+                        Test();   //Amber's
+                        break;
+                    case "testing2": //Amber's
+                        Test2();
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
                 Console.WriteLine("\nPlease select an option:");
                 Console.WriteLine("1. Register User");
                 Console.WriteLine("2. Register Admin");
@@ -207,6 +282,7 @@ namespace Library_Management_System
             {
                 Console.WriteLine("You do not have a library card. Please register one.");
                 return;
+main
             }
 
             LibraryCard card = LibraryCardRepository.Instance.GetCard(username);
@@ -215,6 +291,28 @@ namespace Library_Management_System
 
         static void RegisterLibraryCard(string? username)
         {
+ security-questions
+            Console.Write("Enter username: ");
+            var username = Console.ReadLine();
+            Console.Write("Enter email: ");
+            var email = Console.ReadLine();
+            var user = new User(username, email, Role.USER);
+            string password;
+            while(true)
+            {
+                Console.WriteLine("Enter your password");
+                password = Console.ReadLine();
+                try
+                {
+                    user.Password.SetPassword(password);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
             if (username == null)
             {
                 Console.WriteLine("Must be logged in first before you can register for a library card.");
@@ -232,6 +330,7 @@ namespace Library_Management_System
             var password = Console.ReadLine();
             Console.Write("Enter email: ");
             var email = Console.ReadLine();
+ main
 
             if (userService.Register(username, password, email))
             {
@@ -429,6 +528,37 @@ namespace Library_Management_System
                 Console.WriteLine($"User '{currentUser}' deleted successfully.");
                 currentUser = null;
             }
+        }
+
+        static void Test() //Amber's
+        {
+            
+            User usertest = new User("Testuser", "email@local", Role.USER);
+
+            usertest.SecurityQuestions.InputSecurityQuestions();
+        }
+
+        static void Test2() //Amber's
+        {
+            User usertest2;
+            while (true)
+            {
+                try 
+                {
+                    string password = Password.InputPassword();
+                    usertest2 = new User("Testuser2", "email@local", Role.USER);
+
+                    usertest2.Password.SetPassword(password);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error given: " + ex.Message);
+                    Console.WriteLine("Try again!");
+                }
+            }
+            Console.WriteLine(usertest2.Password.GetPassword());
+
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Library_Management_System.Services
         * @param email The email address of the user.
         * @return True if registration is successful; otherwise, false.
         */
-        public bool Register(string username, string password, string email, Role role = Role.USER)
+        public bool Register(string username, string password, string email, Role role = Role.USER) //Amber Mattoni  SecurityQuestions
         {
             // Check if the username already exists
             if (userRepository.GetUserByUsername(username) != null)
@@ -45,12 +45,22 @@ namespace Library_Management_System.Services
             }
 
             // Create a new User object with the provided details
-            var user = new User(username, password, email, role);
+            var user = new User(username, email, role);
+            try
+            {
+                user.Password.SetPassword(password);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
+    
+            user.SecurityQuestions.InputSecurityQuestions(); //Amber's
             // Add the new user to the repository
             userRepository.AddUser(user);
 
-            // Log the successful registration
+            // Log the successful registrationget 
             _logger.LogInformation("User {Username} registered successfully.", username);
 
             return true; // Indicate successful registration
@@ -80,7 +90,7 @@ namespace Library_Management_System.Services
             }
 
             // Validate the password
-            if (user.Password != password)
+            if (user.Password.VerifyPassword(password)) //implement by Amber
             {
             _logger.LogWarning("Login failed: Invalid password for username {Username}.", username);
             return false; // Indicate failed login due to incorrect password
