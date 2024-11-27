@@ -1,0 +1,36 @@
+# Visual Studio specific files
+.vs/
+*.user
+*.suo
+
+# Build output directories
+bin/
+obj/
+
+# Logs and temporary files
+*.log
+*.temp
+*.tmp
+
+# IDE-generated files
+*.DS_Store
+*.idea/
+*.vscode/
+*.swp
+
+# Build and dependency management
+*.dll
+*.exe
+*.pdb
+
+# Dependency manager files
+packages/
+node_modules/
+*.lock
+
+# Generated files
+Library Management System.generated.sln
+*.csproj.user
+
+# Ignore design documents
+DesignDoc/
