@@ -12,14 +12,12 @@ namespace Library_Management_System.Services
         private readonly UserRepository userRepository = UserRepository.Instance;
         private readonly ILogger<BookService> _logger;
 
-
         public BookService()
         {
-            // We can use logger if we need o instead of printing to the console.
+            // We can use logger if we need to instead of printing to the console.
             //TODO: Discuss this in the sync up
             _logger = LoggingConfig.CreateLogger<BookService>();
         }
-
 
         /* Adds a new book to the repository if the user is verified.
         *
@@ -248,28 +246,47 @@ namespace Library_Management_System.Services
                 return; // Exit if the book does not exist
             }
 
-            // Attempt to borrow the book within a try-catch block
+            // Retrieve the user's library card
+            LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
+            if (userCard == null)
+            {
+                Console.WriteLine($"Error: No library card found for user {username}.");
+                return;
+            }
+
+            // Validate borrowing conditions and borrow the book
             try
             {
-                LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
-                if (userCard.Count < 5 && book.IsAvailable)
+                if (userCard.IsCardExpired())
                 {
-                    book.Borrow(username);
-                    userCard.BorrowBook(isbn);
-                    Console.WriteLine($"Book '{book.Title}' borrowed successfully by {username}.");
+                    Console.WriteLine("Error: Your library card is expired. Please renew it to borrow books.");
+                    userCard.ForceRenewCard();
+                    return;
                 }
-                else
+
+                if (userCard.BorrowedBookCount >= 5)
                 {
-                    Console.WriteLine("This book is already borrowed");
+                    Console.WriteLine("Error: Borrowing limit reached. Please return a book to borrow a new one.");
+                    return;
                 }
-                
+
+                if (!book.IsAvailable)
+                {
+                    Console.WriteLine($"Error: Book '{book.Title}' is currently not available for borrowing.");
+                    return;
+                }
+
+                // Borrow the book
+                userCard.BorrowBook(book);
+                book.Borrow(username);
+                Console.WriteLine($"Success: Book '{book.Title}' borrowed successfully by {username}.");
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                // Handle any exceptions thrown by the Borrow method
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error: Unable to borrow book. {ex.Message}");
             }
         }
+
 
 
         /* Returns a borrowed book to the library if the user is verified.
@@ -297,23 +314,40 @@ namespace Library_Management_System.Services
                 return; // Exit if the book does not exist
             }
 
-            // Check if the book is currently borrowed
-            if (!book.IsBorrowed)
-            {
-                Console.WriteLine($"Error: The book '{book.Title}' is not currently borrowed.");
-                return; // Exit if the book is not borrowed
-            }
-
+            // Retrieve the user's library card
             LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
-
-            // Mark the book as returned
-            if (userCard.ReturnBook(isbn))
+            if (userCard == null)
             {
-                book.Return();
-                Console.WriteLine($"Book '{book.Title}' returned successfully.");
+                Console.WriteLine($"Error: No library card found for user {username}.");
+                return;
             }
-            
+
+            // Check if the book is currently borrowed by this user
+            if (!book.IsBorrowed || book.BorrowedByUser != username)
+            {
+                Console.WriteLine($"Error: The book '{book.Title}' is not borrowed by {username}.");
+                return;
+            }
+
+            // Return the book
+            try
+            {
+                if (userCard.ReturnBook(book))
+                {
+                    book.Return();
+                    Console.WriteLine($"Success: Book '{book.Title}' returned successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"Error: Unable to return book '{book.Title}'.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: Unable to return book. {ex.Message}");
+            }
         }
+
 
 
         /* Reserves a book if the user is verified.
@@ -341,18 +375,33 @@ namespace Library_Management_System.Services
                 return; // Exit if the book does not exist
             }
 
-            // Attempt to reserve the book within a try-catch block
+            // Retrieve the user's library card
+            LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
+            if (userCard == null)
+            {
+                Console.WriteLine($"Error: No library card found for user {username}.");
+                return;
+            }
+
+            // Attempt to reserve the book
             try
             {
+                if (!book.IsAvailable)
+                {
+                    Console.WriteLine($"Error: Book '{book.Title}' is not available for reservation.");
+                    return;
+                }
+
+                userCard.ReserveBook(book);
                 book.Reserve(username);
                 Console.WriteLine($"Book '{book.Title}' reserved successfully by {username}.");
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                // Handle any exceptions thrown by the Reserve method
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error: Unable to reserve book. {ex.Message}");
             }
         }
+
 
         /* Displays all available books in the catalog if the user is verified.
         *
@@ -414,18 +463,41 @@ namespace Library_Management_System.Services
                 return; // Exit if the book does not exist
             }
 
-            // Attempt to cancel the reservation within a try-catch block
+            // Retrieve the user's library card
+            LibraryCard userCard = LibraryCardRepository.Instance.GetCard(username);
+            if (userCard == null)
+            {
+                Console.WriteLine($"Error: No library card found for user {username}.");
+                return;
+            }
+
+            // Attempt to cancel the reservation
             try
             {
-                book.CancelReservation(username);
-                Console.WriteLine($"Reservation for book '{book.Title}' by {username} canceled successfully.");
+                if (!userCard.GetReservedBooks().Contains(book))
+                {
+                    Console.WriteLine($"Error: Book '{book.Title}' is not reserved by {username}.");
+                    return;
+                }
+
+                // Remove reservation from the user's library card
+                if (userCard.CancelReservation(book))
+                {
+                    // Update the book's reservation status
+                    book.CancelReservation(username);
+                    Console.WriteLine($"Success: Reservation for book '{book.Title}' by {username} canceled successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"Error: Unable to cancel reservation for book '{book.Title}'.");
+                }
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                // Handle any exceptions thrown by the CancelReservation method
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error: Unable to cancel reservation. {ex.Message}");
             }
         }
+
 /* 
         ====================================================================================================
                                                 HELPERS
@@ -488,26 +560,92 @@ namespace Library_Management_System.Services
          */
         public void PreAddBooks()
         {
-            //Create an admin user and log them in
-            //TODO: Add actual books from an API or mock book objects
-            var adminUser = new User("admin_user", "admin123", "admin@admin.com", Role.ADMIN);
-            userRepository.AddUser(adminUser);
-            adminUser.IsLoggedIn = true;
+            // Ensure required users are set up
+            SetupUsers();
 
-
-            for (int i = 1; i <= 20; i++)
+            // Fetch the admin user to perform book addition
+            var adminUser = userRepository.GetUserByUsername("admin_user");
+            if (adminUser == null || !adminUser.IsLoggedIn)
             {
-                string isbn = $"111-22233344{i:D2}";
-                string title = $"Book Title {i}";
-                string author = $"Author {i}";
-                int publishedYear = 2000 + i;
-                string genre = (i % 2 == 0) ? "Fiction" : "Non-Fiction";
-
-                // Assuming the 'admin_user' is used to pre-add the books
-                AddBook(isbn, title, author, publishedYear, genre, adminUser.Username);
+                Console.WriteLine("Admin user setup failed or is not logged in. Cannot pre-add books.");
+                return;
             }
 
-            Console.WriteLine("Pre-added 20 books to the repository.");
+            // Predefined list of books with fake ISBNs
+            var books = new List<(string Isbn, string Title, string Author, int PublishedYear, string Genre)>
+            {
+                ("111-2223334450", "Pride and Prejudice", "Jane Austen", 1813, "Fiction"),
+                ("111-2223334451", "To Kill a Mockingbird", "Harper Lee", 1960, "Fiction"),
+                ("111-2223334452", "The Great Gatsby", "F. Scott Fitzgerald", 1925, "Fiction"),
+                ("111-2223334453", "1984", "George Orwell", 1949, "Fiction"),
+                ("111-2223334454", "The Catcher in the Rye", "J.D. Salinger", 1951, "Fiction"),
+                ("111-2223334455", "Moby Dick", "Herman Melville", 1851, "Fiction"),
+                ("111-2223334456", "War and Peace", "Leo Tolstoy", 1869, "Fiction"),
+                ("111-2223334457", "The Odyssey", "Homer", -800, "Fiction"),
+                ("111-2223334458", "The Iliad", "Homer", -750, "Fiction"),
+                ("111-2223334459", "Crime and Punishment", "Fyodor Dostoevsky", 1866, "Fiction"),
+                ("111-2223334460", "Frankenstein", "Mary Shelley", 1818, "Fiction"),
+                ("111-2223334461", "Dracula", "Bram Stoker", 1897, "Fiction"),
+                ("111-2223334462", "Jane Eyre", "Charlotte Bronte", 1847, "Fiction"),
+                ("111-2223334463", "The Lord of the Rings", "J.R.R. Tolkien", 1954, "Fiction"),
+                ("111-2223334464", "Animal Farm", "George Orwell", 1945, "Fiction"),
+                ("111-2223334465", "Brave New World", "Aldous Huxley", 1932, "Fiction"),
+                ("111-2223334466", "Wuthering Heights", "Emily Bronte", 1847, "Fiction"),
+                ("111-2223334467", "Don Quixote", "Miguel de Cervantes", 1605, "Fiction"),
+                ("111-2223334468", "The Divine Comedy", "Dante Alighieri", 1320, "Fiction"),
+                ("111-2223334469", "Hamlet", "William Shakespeare", 1600, "Fiction")
+            };
+
+            // Add books
+            foreach (var book in books)
+            {
+                try
+                {
+                    AddBook(book.Isbn, book.Title, book.Author, book.PublishedYear, book.Genre, adminUser.Username);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to pre-add book '{book.Title}': {ex.Message}");
+                }
+            }
+            adminUser.IsLoggedIn = false;
+            Console.WriteLine("Pre-added books successfully.");
+        }
+
+        private void SetupUsers()
+        {
+            const string adminUsername = "admin_user";
+            const string adminPassword = "Admin@123";
+            const string adminEmail = "admin@admin.com";
+
+            const string userUsername = "regular_user";
+            const string userPassword = "User@123";
+            const string userEmail = "user@user.com";
+
+            var adminUser = userRepository.GetUserByUsername(adminUsername);
+            var regularUser = userRepository.GetUserByUsername(userUsername);
+
+            if (adminUser == null)
+            {
+                adminUser = new User(adminUsername, adminEmail, Role.ADMIN);
+                regularUser = new User(userUsername, userEmail, Role.USER);
+                try
+                {
+                    adminUser.Password.SetPassword(adminPassword);
+                    regularUser.Password.SetPassword(userPassword);
+                    userRepository.AddUser(adminUser);
+                    userRepository.AddUser(regularUser);
+                    Console.WriteLine("Users created successfully.");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"Failed to set user passwords: {ex.Message}");
+                    return;
+                }
+            }
+
+            adminUser.IsLoggedIn = true;
+            regularUser.IsLoggedIn = false;
         }
     }
 }

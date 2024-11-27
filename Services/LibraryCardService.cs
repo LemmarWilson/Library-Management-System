@@ -1,58 +1,112 @@
 ﻿using Library_Management_System.Models;
 using Library_Management_System.Repositories;
-using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library_Management_System.Services
 {
     public class LibraryCardService
     {
-        private static Address GetAddress()
+        /* Prompts the user for address details and creates an Address object.
+        *
+        * This method interacts with the user to input their street, city, state, and zipcode.
+        * It validates each input to ensure no null or empty values are provided.
+        *
+        * @return An Address object containing the entered address details.
+        */
+        private static Address CreateAddress()
         {
             string street, city, state, zipcode;
-            Console.Write("Enter your street name: ");
-            street = Console.ReadLine();
 
-            Console.Write("Enter your city: ");
-            city = Console.ReadLine();
+            // Prompt for and validate street name
+            do
+            {
+                Console.Write("Enter your street name: ");
+                street = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(street))
+                {
+                    Console.WriteLine("Street name cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(street));
 
-            Console.Write("Enter your state: ");
-            state = Console.ReadLine();
+            // Prompt for and validate city
+            do
+            {
+                Console.Write("Enter your city: ");
+                city = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(city))
+                {
+                    Console.WriteLine("City cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(city));
 
-            Console.Write("Enter your zipcode: ");
-            zipcode = Console.ReadLine();
+            // Prompt for and validate state
+            do
+            {
+                Console.Write("Enter your state: ");
+                state = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(state))
+                {
+                    Console.WriteLine("State cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(state));
 
-            Address userAddress = new Address(street, city, state, zipcode);
+            // Prompt for and validate zipcode
+            do
+            {
+                Console.Write("Enter your zipcode: ");
+                zipcode = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(zipcode))
+                {
+                    Console.WriteLine("Zipcode cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(zipcode));
 
-            return userAddress;
+            // Create and return the Address object
+            return new Address(street, city, state, zipcode);
         }
-        public static LibraryCard CreateCard()
-        {
-            return null;
-        }
+
+        /* Creates a library card for a specific user.
+        *
+        * This method prompts the user for their first name, last name, and address.
+        * It validates the input to ensure no null or empty values are provided.
+        * Then, it creates a LibraryCard object and adds it to the repository for the specified username.
+        *
+        * @param username The username to associate with the created library card.
+        */
         public static void CreateCard(string username)
         {
-            Console.Write("Enter your first name: ");
-            string firstName = Console.ReadLine();
+            string firstName, lastName;
 
-            Console.Write("Enter your last name: ");
-            string lastName = Console.ReadLine();
+            // Prompt for and validate first name
+            do
+            {
+                Console.Write("Enter your first name: ");
+                firstName = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(firstName))
+                {
+                    Console.WriteLine("First name cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(firstName));
 
-            Address userAddress = GetAddress();
+            // Prompt for and validate last name
+            do
+            {
+                Console.Write("Enter your last name: ");
+                lastName = Console.ReadLine()?.Trim();
+                if (string.IsNullOrEmpty(lastName))
+                {
+                    Console.WriteLine("Last name cannot be empty. Please try again.");
+                }
+            } while (string.IsNullOrEmpty(lastName));
 
+            // Get address details
+            Address userAddress = CreateAddress();
+
+            // Create a LibraryCard object
             LibraryCard? libraryCard = new LibraryCard(firstName, lastName, userAddress);
 
+            // Add the library card to the repository
             LibraryCardRepository.Instance.AddLibraryCard(username, libraryCard);
+            Console.WriteLine("Library card registered successfully.");
         }
-        //public static DeleteCard(string username)
-        //{
-            
-        //}
     }
 }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Library_Management_System.Models
+﻿namespace Library_Management_System.Models
 {
     public class Address
     {
@@ -22,9 +15,14 @@ namespace Library_Management_System.Models
             _zipcode = zipcode;
         }
 
+        public override string ToString()
+        {
+            return $"{_streetName}, {_city}, {_state} {_zipcode}";
+        }
+
         public void DisplayAddress()
         {
-            Console.WriteLine($"{_streetName} {_city},\n {_state} {_zipcode}");
+            Console.WriteLine(ToString());
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Library_Management_System.Repositories
         /* Adds a new book to the repository.
         *
         * This method adds the provided book object to the dictionary.
-        * It assumes that the caller has already performed any necessary validations.
         *
         * @param book The Book object to be added to the repository.
         */

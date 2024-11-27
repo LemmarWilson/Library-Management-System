@@ -5,24 +5,23 @@ namespace Library_Management_System.Models
 {
     public class User
     {
-        public string Username { get; private set; }
-        //public string Password { get; private set; } //might break stuff
+        public string Username { get; set; }
 
-        public Password Password { get; private set; } //Amber's
-        public string Email { get; private set; }
+        public Password Password { get; private set; }
+        public string Email { get; set; }
         public bool IsLoggedIn { get; set; } = false;
         public Role Role { get; private set; }
-        public SecurityQuestions SecurityQuestions { get; private set; } //Added property for user to access security questions
+        public SecurityQuestions SecurityQuestions { get; private set; }
 
         // Constructor that accepts all properties, including role
         public User(string username, string email, Role role) 
         {
             Username = username;
             //Password = password;
-            Password = new Password(); //Amber's
+            Password = new Password();
             Email = email;
             Role = role;
-            SecurityQuestions = new SecurityQuestions(); //Amber's
+            SecurityQuestions = new SecurityQuestions();
         }
     }
 }
