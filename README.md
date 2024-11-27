@@ -72,5 +72,5 @@ dotnet run
 This will start the application, and you can begin interacting with the Library Management System via the command-line interface.
 
 ### Contributions
-This project is the final submission for CSC200 - Intermediate Programming. The development team consists of <span style="color:#F0EAD6;">**Lemmar Wilson**</span>, <span style="color:#F0EAD6;">**Amber Mattoni**</span>, and <span style="color:#F0EAD6;">**John P. McDurmon**</span>
+This project is the final submission for CSC200 - Intermediate Programming. The development team consists of <span style="color:#F0EAD6;">**Lemmar Wilson**</span>, <span style="color:#F0EAD6;">**Amber Mattoni**</span>, and <span style="color:#F0EAD6;">**Miguel Gomez**</span>
 . We have collaborated to create a comprehensive Library Management System, demonstrating our skills in C# programming, software design, and project management.
